@@ -15,11 +15,17 @@ class AsyncQueue extends events.EventEmitter {
     }
 
     start(){
-
+        while (this.queue.length !== 0) {
+            console.log(this.dequeue());
+        }
     }
+
     pause(){ 
     }
     
+    dequeue(){
+        return this.queue.shift();
+    }
     enqueue(item){
         this.queueEvents.on('enqueue', listner2(item));
         this.queue.push(item);
