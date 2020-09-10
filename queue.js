@@ -15,6 +15,9 @@ class AsyncQueue extends events.EventEmitter {
     }
 
     start(){
+
+        // maybe a setInterval should be better
+        // TODO add setInterval
         while (this.queue.length !== 0) {
             console.log(this.dequeue());
         }
