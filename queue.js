@@ -1,51 +1,65 @@
+const { EventEmitter } = require('events');
 
-const events = require('events');
+class AsyncQueue extends EventEmitter {
+    constructor({ interval } = {}) {
+        super();
+        // default until the queue is started
+        this.isPause = true;
+        this.queue = [];
+        this.interval = interval ? interval : 250;
 
-class AsyncQueue extends events.EventEmitter {
-    constructor(){
-
-        const eventEmitter = new events.EventEmitter();
-        this.queueEvents = eventEmitter
-        this.queue = []
-
-        const listner1 = function listner1(item) {
-            console.log('enqueue',{item});
-         }
-        eventEmitter.addListener('enqueue',listner1);
+        this.on('interval', (newInterval) => {
+            this.interval = newInterval;
+        });
     }
 
-    start(){
+    start() {
+        this.isPause = false;
 
-        // maybe a setInterval should be better
-        // TODO add setInterval
-        while (this.queue.length !== 0) {
-            console.log(this.dequeue());
-        }
+        const interval = setInterval(() => {
+            if (this.isPause) {
+                return;
+            }
+            if (!this.isEmpty()) {
+                this.dequeue();
+            }
+            /*   if (this.isEmpty()) {
+                clearInterval(interval);
+            } */
+        }, this.interval);
     }
 
-    pause(){ 
+    pause() {
+        this.isPause = true;
     }
-    
-    dequeue(){
+
+    dequeue() {
+        this.emit('dequeued', this.peek());
         return this.queue.shift();
     }
-    enqueue(item){
-        this.queueEvents.on('enqueue', listner2(item));
+    enqueue(item) {
+        this.emit('enqueued', item);
         this.queue.push(item);
     }
 
-    peek(){
-       if(this.queue.length === 0){
-           return null
-       }else{
-        return this.queue[0];
-       }
-      
+    isEmpty() {
+        return this.queue.length == 0;
+    }
+    getCurrentInterval() {
+        return this.interval;
     }
 
-    print(){
-        return this.queue
+    peek() {
+        return this.isEmpty() ? null : this.queue[0];
+    }
+
+    print() {
+        this.queue.forEach((item) => {
+            console.log(item);
+        });
+
+        return this.queue;
     }
 }
 
-module.exports = AsyncQueue
+module.exports = AsyncQueue;
