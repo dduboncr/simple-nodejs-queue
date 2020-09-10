@@ -1,4 +1,4 @@
-const AsyncQueue = require('./queue');
+const AsyncQueue = require('./src/queue');
 const queue = new AsyncQueue();
 
  queue.on('enqueued', (item) => {
