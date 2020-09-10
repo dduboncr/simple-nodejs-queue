@@ -3,7 +3,6 @@ const AsyncQueue = require('../queue');
 const Promise = require('bluebird');
 const should = chai.should();
 const sinon = require('sinon');
-const { assert } = require('chai');
 
 
 describe('async_queue', () => {
@@ -32,7 +31,7 @@ describe('async_queue', () => {
         queue.enqueue(2);
 
         setTimeout(() => {
-           onQueueSpy.callCount.should.eql(2);
+            onQueueSpy.callCount.should.eql(2);
             done();
         }, 20);
 
